@@ -45,6 +45,25 @@ chrome.webRequest.onBeforeRequest.addListener(
     ['blocking']
 )
 
+chrome.webRequest.onBeforeSendHeaders.addListener(
+    headers => {
+        // check for DNT header, bail if we find one
+        for (var i = 0; i < headers.requestHeaders.length; ++i) {
+            if (headers.requestHeaders[i].name === 'DNT') {
+                break
+            }
+        }
+
+        // add DNT header
+        headers.requestHeaders.push({name: 'DNT', value: "1"})
+        return {requestHeaders: headers.requestHeaders}
+    }, 
+    {
+        urls: ['<all_urls>']
+    },
+    ["blocking", "requestHeaders"]
+)
+
 chrome.webRequest.onHeadersReceived.addListener(
     request => {
         if (request.type === 'main_frame') {
