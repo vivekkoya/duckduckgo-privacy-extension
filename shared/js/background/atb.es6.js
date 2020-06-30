@@ -118,8 +118,10 @@ const ATB = (() => {
             settings.updateSetting('extiSent', true)
             settings.updateSetting('set_atb', atb)
 
+            let randomValue = Math.ceil(Math.random() * 1e7)
+
             // just a GET request, we only care that the request was made
-            load.url(`https://duckduckgo.com/exti/?${paramString}`)
+            load.url(`https://duckduckgo.com/exti/${randomValue}?${paramString}`)
         },
 
         // iterate over a list of accepted params, and retrieve them from a URL
