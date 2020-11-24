@@ -33,14 +33,14 @@ module.exports = function () {
             ${tosdr && tosdr.reasons ? renderDetails(tosdr.reasons) : renderNoDetails()}
         </div>
         <div class="privacy-practices__attrib padded text--center border--top--inner">
-            Privacy Practices from ${crossplatformLink('https://tosdr.org/', {
+            Privacy Practice results from ${crossplatformLink('https://tosdr.org/', {
         className: 'bold',
         target: '_blank',
         text: 'ToS;DR',
         attributes: {
             'aria-label': 'Terms of Service; Didn\'t Read'
         }
-    })}.
+    })}
         </div>
     </div>
 </section>`
@@ -72,10 +72,10 @@ function renderDetails (reasons) {
 function renderNoDetails () {
     return bel`<div class="text--center">
     <h1 class="privacy-practices__details__title">
-        No privacy practices found
+        No Privacy Practices Found
     </h1>
     <div class="privacy-practices__details__msg">
-        The privacy practices of this website have not been reviewed.
+        The Privacy practices of this website have not been reviewed.
     </div>
 </div>`
 }

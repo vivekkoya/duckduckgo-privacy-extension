@@ -49,7 +49,7 @@ function getReasons (site) {
     if (site.isaMajorTrackingNetwork) {
         reasons.push({
             modifier: 'bad',
-            msg: `Site Is a Major Tracker Network`
+            msg: `Site is a Major Tracker Network`
         })
     }
 
