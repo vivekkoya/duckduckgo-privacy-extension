@@ -47,7 +47,8 @@ const tabManager = require('./tab-manager.es6')
 const pixel = require('./pixel.es6')
 const https = require('./https.es6')
 const constants = require('../../data/constants')
-const requestListenerTypes = utils.getUpdatedRequestListenerTypes()
+const cookieConfig = require('./../background/storage/cookies.es6')
+let requestListenerTypes = utils.getUpdatedRequestListenerTypes()
 
 // Shallow copy of request types
 // And add beacon type based on browser, so we can block it
@@ -70,10 +71,27 @@ chrome.webRequest.onHeadersReceived.addListener(
             // returns a promise
             return ATB.updateSetAtb(request)
         }
+
+        // Strip 3rd party response header
+        const tab = tabManager.get({ tabId: request.tabId })
+        if (!request.responseHeaders) return
+        if (tab && tab.site.whitelisted) return
+        if (tab && utils.isFirstParty(request.url, tab.url)) return
+        const index = request.responseHeaders.findIndex(header => { return header.name.toLowerCase() === 'set-cookie' })
+        if (index !== -1) {
+            if (!cookieConfig.isExcluded(request.url)) {
+                request.responseHeaders.splice(index, 1)
+            }
+        }
+
+        return { responseHeaders: request.responseHeaders }
     },
     {
         urls: ['<all_urls>']
-    }
+    },
+    [
+        'blocking', 'responseHeaders', 'extraHeaders'
+    ]
 )
 
 /**
@@ -212,6 +230,27 @@ chrome.runtime.onMessage.addListener((req, sender, res) => {
             fireArgs = [req.firePixel]
         }
         res(pixel.fire.apply(null, fireArgs))
+        return true
+    }
+
+    if (req.checkThirdParty) {
+        const action = {
+            isThirdParty: false,
+            shouldBlock: false
+        }
+        const tab = tabManager.get({ tabId: sender.tab.id })
+        if (tab && tab.site.whitelisted) {
+            res(action)
+        }
+
+        if (!utils.isFirstParty(sender.url, sender.tab.url)) {
+            action.isThirdParty = true
+        }
+        if (!cookieConfig.isExcluded(sender.url)) {
+            action.shouldBlock = true
+        }
+
+        res(action)
         return true
     }
 })
@@ -435,6 +474,7 @@ chrome.alarms.onAlarm.addListener(alarmEvent => {
         settings.ready()
             .then(() => {
                 agents.updateAgentData()
+                cookieConfig.updateCookieData()
             }).catch(e => console.log(e))
     } else if (alarmEvent.name === 'rotateUserAgent') {
         agentSpoofer.needsRotation = true
@@ -475,6 +515,7 @@ const onStartup = () => {
         Companies.buildFromStorage()
 
         agents.updateAgentData()
+        cookieConfig.updateCookieData()
     })
 }
 
