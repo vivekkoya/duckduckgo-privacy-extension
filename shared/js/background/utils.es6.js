@@ -151,6 +151,7 @@ function getAsyncBlockingSupport () {
  * check to see if this is a broken site reported on github
 */
 function isBroken (url) {
+    return false;
     if (!tdsStorage?.brokenSiteList) return
     return isBrokenList(url, tdsStorage.brokenSiteList)
 }
