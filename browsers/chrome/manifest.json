@@ -72,5 +72,8 @@
         "/img/logo-small.svg",
         "/public/css/email-autofill.css",
         "/public/font/*"
-    ]
+    ],
+    "storage": {
+        "managed_schema": "managed-schema.json"
+    }
 }
