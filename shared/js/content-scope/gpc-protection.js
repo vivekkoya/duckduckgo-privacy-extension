@@ -13,7 +13,8 @@ export function init (args) {
         } else {
             // If GPC off, don't override if DOM property has
             // already been set by browser or other extension
-            if (Navigator.prototype.hasOwnProperty('globalPrivacyControl')) return
+            if (Reflect.has(Navigator.prototype, 'globalPrivacyControl') ||
+                typeof navigator.globalPrivacyControl !== 'undefined') return
             defineProperty(Navigator.prototype, 'globalPrivacyControl', {
                 get: () => false,
                 configurable: true,
