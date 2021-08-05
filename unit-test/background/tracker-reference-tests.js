@@ -2,32 +2,51 @@ const tds = require('../../shared/js/background/trackers.es6')
 const tdsStorageStub = require('./../helpers/tds.es6')
 const settings = require('../../shared/js/background/settings.es6')
 
-const trackers = require('./reference-tests/tracker-radar-tests/TR-domain-matching/tracker_radar_reference.json')
+const refTrackers = require('./reference-tests/tracker-radar-tests/TR-domain-matching/tracker_radar_reference.json')
 const refTests = require('./reference-tests/tracker-radar-tests/TR-domain-matching/domain_matching_tests.json')
+const refSurrogates = require('./reference-tests/tracker-radar-tests/TR-domain-matching/surrogates.js')
 
 describe('Tracker reference tests:', () => {
-    let settingsObserver
-    let timer = Date.now()
-    const jump = 1000 * 60 * 31 // slightly more than cache timeout
+    // let settingsObserver
+    // let timer = Date.now()
+    // const jump = 1000 * 60 * 31 // slightly more than cache timeout
+
+    // beforeAll(() => {
+    //     settingsObserver = spyOn(settings, 'getSetting')
+    //     tdsStorageStub.stub()
+    //     console.log('ZZZZ', refSurrogates);
+    //     const testLists = [{
+    //         name: 'tds',
+    //         data: refTrackers
+    //     }]
+    //     // {
+    //     //     name: 'surrogates',
+    //     //     data: refSurrogates.surrogates
+    //     // }]
+    //     tds.setLists(testLists)
+    //     // Make sure we don't use any list caches for these tests
+    //     spyOn(Date, 'now').and.callFake(function () {
+    //         // Cache may be updated on each run, so keep jumping the time forward for each call
+    //         timer += jump
+    //         return timer
+    //     })
+    //
+    //     settings.updateSetting('trackerBlockingEnabled', true)
+    //     return settingsObserver.and.returnValue(undefined)
+    // })
 
     beforeAll(() => {
-        settingsObserver = spyOn(settings, 'getSetting')
         tdsStorageStub.stub()
+
         const testLists = [{
             name: 'tds',
-            data: trackers
+            data: refTrackers
+        },
+        {
+            name: 'surrogates',
+            data: refSurrogates.surrogates
         }]
-        tds.setLists(testLists)
-
-        // Make sure we don't use any list caches for these tests
-        spyOn(Date, 'now').and.callFake(function () {
-            // Cache may be updated on each run, so keep jumping the time forward for each call
-            timer += jump
-            return timer
-        })
-
-        settings.updateSetting('trackerBlockingEnabled', true)
-        settingsObserver.and.returnValue(undefined)
+        return tds.setLists(testLists)
     })
 
     const domainTests = refTests.domainTests.tests
