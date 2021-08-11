@@ -7,34 +7,6 @@ const refTests = require('./TEMP/domain_matching_tests.json')
 const refSurrogates = require('./TEMP/surrogates.js')
 
 describe('Tracker reference tests:', () => {
-    // let settingsObserver
-    // let timer = Date.now()
-    // const jump = 1000 * 60 * 31 // slightly more than cache timeout
-
-    // beforeAll(() => {
-    //     settingsObserver = spyOn(settings, 'getSetting')
-    //     tdsStorageStub.stub()
-    //     console.log('ZZZZ', refSurrogates);
-    //     const testLists = [{
-    //         name: 'tds',
-    //         data: refTrackers
-    //     }]
-    //     // {
-    //     //     name: 'surrogates',
-    //     //     data: refSurrogates.surrogates
-    //     // }]
-    //     tds.setLists(testLists)
-    //     // Make sure we don't use any list caches for these tests
-    //     spyOn(Date, 'now').and.callFake(function () {
-    //         // Cache may be updated on each run, so keep jumping the time forward for each call
-    //         timer += jump
-    //         return timer
-    //     })
-    //
-    //     settings.updateSetting('trackerBlockingEnabled', true)
-    //     return settingsObserver.and.returnValue(undefined)
-    // })
-
     beforeAll(() => {
         tdsStorageStub.stub()
 
@@ -56,9 +28,13 @@ describe('Tracker reference tests:', () => {
             const rootURL = test.siteURL
             const requestURL = test.requestURL
             const requestType = test.requestType
+            const expectRedirect = test.expectRedirect
             const result = tds.getTrackerData(requestURL, rootURL, { type: requestType })
             const action = (result && result.action)
             expect(test.expectAction).toEqual(action)
+            if(expectRedirect) {
+                expect(expectRedirect).toEqual(result.redirectUrl)
+            }
         })
     }
 })

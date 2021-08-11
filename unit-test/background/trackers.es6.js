@@ -7,7 +7,7 @@ describe('tracker blocking', () => {
     beforeEach(() => {
         tdsStorageStub.stub()
         return tdsStorage.getLists()
-            // .then(lists => tds.setLists(lists))
+            .then(lists => tds.setLists(lists))
     })
 
     it('tracker module has correct data', () => {

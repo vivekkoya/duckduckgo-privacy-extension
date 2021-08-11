@@ -75,7 +75,11 @@
             "rules": [
                 {
                     "rule": "surrogates\\.test\\/tracker",
-                    "surrogate": "analytics.js"
+                    "surrogate": "tracker"
+                },
+                {
+                    "rule": "surrogates\\.test\\/anothertracker",
+                    "surrogate": "missingsurrogate"
                 }
             ],
             "default": "ignore"
