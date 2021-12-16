@@ -42,7 +42,6 @@ jobs:
         with:
           commit_message: ${{ github.event.inputs.version }}
           branch: develop
-          title: "Prepare release ${{ github.event.inputs.version }}"
 
       - name: Generate changelog
         id: changelog
